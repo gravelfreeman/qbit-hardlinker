@@ -28,13 +28,6 @@ fi
 # Create destination directory if it doesn't exist
 mkdir -p "$destination"
 
-# Function to create directory structure
-create_dir_structure() {
-    dir_path="$1"
-    mkdir -p "$dir_path"
-    [ "$enable_logging" = true ] && echo "Created directory structure: $dir_path" >> "$log_file"
-}
-
 # Function to create a hard link
 create_hardlink() {
     src_file="$1"
@@ -48,20 +41,24 @@ OLDIFS=$IFS
 # Set IFS to newline only
 IFS=$'\n'
 
-# Process each file in the download path
+# Process each dir in the download path
+find "$download_path" -type d | while read -r dir; do
+    # Extract relative path
+    relative_path="${dir#"$base_path"/}"
+    mkdir -p "$destination/$relative_path"
+    [ "$enable_logging" = true ] && echo "Created directory structure: $dir_path" >> "$log_file"
+done
+
 find "$download_path" -type f | while read -r file; do
     # Extract relative path
-    relative_path="${file#$"base_path"/}"
-
-    # Create destination directory structure
-    create_dir_structure "$(dirname "$destination/$relative_path")"
+    relative_path="${file#"$base_path"/}"
 
     # Create hard link
     create_hardlink "$file" "$destination/$relative_path"
 done
 
 # Clean up empty folders from previous runs
-[ "$enable_cleanup" = true ] && find $destination -type d -empty -exec rmdir {} \; 2>/dev/null
+[ "$enable_cleanup" = true ] && find $destination -mindepth 2 -type d -empty -exec rmdir {} \; 2>/dev/null
 
 # Restore original IFS
 IFS=$OLDIFS
