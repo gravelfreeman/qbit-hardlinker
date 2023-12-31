@@ -9,7 +9,7 @@ base_path="/media/qbittorrent/data"
 # The destination folder 
 #
 # This is where we want our hardlinks to end up, must be on the same filesystem.
-destination="/media/qbittorent/done"
+destination="/media/qbittorrent/done"
 
 # Optional logging
 enable_logging=true
