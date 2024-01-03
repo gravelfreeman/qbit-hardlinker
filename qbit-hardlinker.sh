@@ -9,7 +9,7 @@ base_path="/media/qbittorrent/data"
 # The destination folder 
 #
 # This is where we want our hardlinks to end up, must be on the same filesystem.
-destination="/media/qbittorent/done"
+destination="/media/qbittorrent/done"
 
 # Optional logging
 enable_logging=true
@@ -45,7 +45,8 @@ IFS=$'\n'
 find "$download_path" -type d | while read -r dir; do
     # Extract relative path
     relative_path="${dir#"$base_path"/}"
-    mkdir -p "$destination/$relative_path"
+    dir_path="$destination/$relative_path"
+    mkdir -p "$dir_path"
     [ "$enable_logging" = true ] && echo "Created directory structure: $dir_path" >> "$log_file"
 done
 
