@@ -28,11 +28,13 @@ nano qbit-hardlinker.sh
 
 4. qBittorent > Tools > Options > Downloads Tab and scroll down to *Run external program* section and check the box *Run external program on torrent finished*
 
-5. Add the script path, ``%R``  in the text field to match the example below
+5. Add the script path, ``%F`` and ``%L`` in the text field to match the example below
 
 ````
-/configs/qbit-hardlinker.sh "%R"
+/configs/qbit-hardlinker.sh %F %L
 ````
+>
+> The %L parameter is required for handling torrents with a category associated 
 
 
 ## Optional:
