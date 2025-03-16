@@ -2,20 +2,27 @@
 
 set -x
 
-torrentID=$1
-torrentName=$2
-torrentPath=$3
+torrentName=$1
+torrentPath=$2
+torrentCategory=$3
 
-srcDir="path/to/source"
-destDir="path/to/destination"
+srcDir="/path/to/source"
+destDir="/path/to/destination"
+
+excludedCategories="radarr,sonarr,lidarr,readarr"
+
+logDir="$(dirname "$0")"
+
+if [[ ",$excludedCategories," == *",$torrentCategory,"* ]]; then
+  echo "[!] Skipped \"${torrentName}\" has excluded \"${torrentCategory}\" category set" >> "$logDir/qbit-hardlinker.log"
+  exit 0
+fi
 
 label="${torrentPath#$srcDir}"
 
 srcPath="${torrentPath}/${torrentName}"
 destPath="${destDir}${label}/${torrentName}"
 
-mkdir -p "~/logs/"
-echo "${torrentID} \"${torrentName}\" \"${torrentPath}\" ${label}" >> ~/logs/qbit-hardlinker.log
+echo "[✔] Successfully hardlinked \"${torrentName}\" in \"${destDir}${label}\"" >> "$logDir/qbit-hardlinker.log"
 
-mkdir -p "${destPath}${label}"
 cp -vrl -t "${destDir}${label}" "${srcPath}"
