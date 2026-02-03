@@ -21,8 +21,13 @@ fi
 label="${torrentPath#$srcDir}"
 
 srcPath="${torrentPath}/${torrentName}"
-destPath="${destDir}${label}/${torrentName}"
+destPath="${destDir}${label}"
 
-echo "[✔] Successfully hardlinked \"${torrentName}\" in \"${destDir}${label}\"" >> "$logDir/qbit-hardlinker.log"
+mkdir -p -- "$destPath" || exit 1
 
-cp -vrl -t "${destDir}${label}" "${srcPath}"
+if cp -vrl -t "$destPath" -- "$srcPath"; then
+  echo "[✔] Successfully hardlinked \"${torrentName}\" in \"${destPath}\"" >> "$logDir/qbit-hardlinker.log"
+else
+  echo "[x] Failed to hardlink \"${torrentName}\" in \"${destPath}\"" >> "$logDir/qbit-hardlinker.log"
+  exit 1
+fi
