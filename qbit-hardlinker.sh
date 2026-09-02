@@ -29,12 +29,12 @@ label="${torrent_path#"$source_dir"}"
 source_path="${torrent_path}/${torrent_name}"
 destination_path="${destination_dir}${label}"
 
-if ! mkdir -p -- "$destination_path"; then
+  if ! mkdir -p "$destination_path"; then
   log "[x] Failed to create destination \"${destination_path}\" for \"${torrent_name}\""
   exit 1
 fi
 
-if cp -rl -t "$destination_path" -- "$source_path"; then
+  if cp -Rl "$source_path" "$destination_path"; then
   log "[✔] Successfully hardlinked \"${torrent_name}\" in \"${destination_path}\""
 else
   log "[x] Failed to hardlink \"${torrent_name}\" in \"${destination_path}\""
