@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1024" height="1024" viewBox="0 0 1024 1024"
+     role="img" aria-labelledby="title desc"
+     shape-rendering="geometricPrecision">
+  <title id="title">qbit-hardlinker</title>
+
+  <defs>
+    <linearGradient id="disc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#70afe9"/>
+      <stop offset="0.52" stop-color="#4f8fd5"/>
+      <stop offset="1" stop-color="#356fbe"/>
+    </linearGradient>
+    <linearGradient id="bridge" x1="404" y1="512" x2="620" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#cfeaff"/>
+      <stop offset="0.47" stop-color="#dff1ff"/>
+      <stop offset="0.53" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- L'extérieur du disque est volontairement transparent. -->
+  <circle cx="512" cy="512" r="500" fill="#cfeaff"/>
+  <circle cx="512" cy="512" r="468" fill="url(#disc)"/>
+
+  <!-- Deux demi-maillons ouverts, inclinés comme une icône de lien. -->
+  <g transform="rotate(-45 512 512)"
+     fill="none" stroke-width="62" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 448 404 H 340 C 246 404 188 452 188 512 C 188 572 246 620 340 620 H 448"
+          stroke="#cfeaff"/>
+    <path d="M 576 404 H 684 C 778 404 836 452 836 512 C 836 572 778 620 684 620 H 576"
+          stroke="#ffffff"/>
+    <path d="M 404 512 H 620" stroke="url(#bridge)"/>
+  </g>
+</svg>
