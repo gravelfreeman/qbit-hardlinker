@@ -1,33 +1,42 @@
 #!/bin/bash
 
-set -x
+set -Eeuo pipefail
 
-torrentName=$1
-torrentPath=$2
-torrentCategory=$3
+torrent_name="${1:?torrent name is required}"
+torrent_path="${2:?torrent path is required}"
+torrent_category="${3:-}"
 
-srcDir="/path/to/source"
-destDir="/path/to/destination"
+source_dir="${QBIT_HARDLINKER_SOURCE_DIR:?QBIT_HARDLINKER_SOURCE_DIR is required}"
+destination_dir="${QBIT_HARDLINKER_DEST_DIR:?QBIT_HARDLINKER_DEST_DIR is required}"
+excluded_categories="${QBIT_HARDLINKER_EXCLUDED_CATEGORIES:-}"
+log_file="${QBIT_HARDLINKER_LOG_FILE:-/dev/stdout}"
 
-excludedCategories="radarr,sonarr,lidarr,readarr"
+log() {
+  printf '[qbit-hardlinker] %s\n' "$1" >> "$log_file"
+}
 
-logDir="$(dirname "$0")"
-
-if [[ ",$excludedCategories," == *",$torrentCategory,"* ]]; then
-  echo "[!] Skipped \"${torrentName}\" has excluded \"${torrentCategory}\" category set" >> "$logDir/qbit-hardlinker.log"
+if [[ -n "$excluded_categories" && -n "$torrent_category" && ",$excluded_categories," == *",$torrent_category,"* ]]; then
+  log "[!] Skipped \"${torrent_name}\" has excluded \"${torrent_category}\" category set"
   exit 0
 fi
 
-label="${torrentPath#$srcDir}"
+if [[ "$torrent_path" != "$source_dir" && "$torrent_path" != "$source_dir/"* ]]; then
+  log "[x] Failed to hardlink \"${torrent_name}\": torrent path is outside source directory"
+  exit 1
+fi
 
-srcPath="${torrentPath}/${torrentName}"
-destPath="${destDir}${label}"
+label="${torrent_path#"$source_dir"}"
+source_path="${torrent_path}/${torrent_name}"
+destination_path="${destination_dir}${label}"
 
-mkdir -p -- "$destPath" || exit 1
+if ! mkdir -p -- "$destination_path"; then
+  log "[x] Failed to create destination \"${destination_path}\" for \"${torrent_name}\""
+  exit 1
+fi
 
-if cp -vrl -t "$destPath" -- "$srcPath"; then
-  echo "[✔] Successfully hardlinked \"${torrentName}\" in \"${destPath}\"" >> "$logDir/qbit-hardlinker.log"
+if cp -rl -t "$destination_path" -- "$source_path"; then
+  log "[✔] Successfully hardlinked \"${torrent_name}\" in \"${destination_path}\""
 else
-  echo "[x] Failed to hardlink \"${torrentName}\" in \"${destPath}\"" >> "$logDir/qbit-hardlinker.log"
+  log "[x] Failed to hardlink \"${torrent_name}\" in \"${destination_path}\""
   exit 1
 fi
