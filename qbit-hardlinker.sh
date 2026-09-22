@@ -7,16 +7,32 @@ torrent_path="${2:?torrent path is required}"
 torrent_category="${3:-}"
 
 source_dir="${QBIT_HARDLINKER_SOURCE_DIR:?QBIT_HARDLINKER_SOURCE_DIR is required}"
+source_dir="${source_dir%/}"
 destination_dir="${QBIT_HARDLINKER_DEST_DIR:?QBIT_HARDLINKER_DEST_DIR is required}"
-excluded_categories="${QBIT_HARDLINKER_EXCLUDED_CATEGORIES:-}"
+destination_dir="${destination_dir%/}"
+mode="${QBIT_HARDLINKER_MODE:-exclude}"
+categories="${QBIT_HARDLINKER_CATEGORIES:-}"
 log_file="${QBIT_HARDLINKER_LOG_FILE:-/dev/stdout}"
 
 log() {
   printf '[qbit-hardlinker] %s\n' "$1" >> "$log_file"
 }
 
-if [[ -n "$excluded_categories" && -n "$torrent_category" && ",$excluded_categories," == *",$torrent_category,"* ]]; then
-  log "[!] Skipped \"${torrent_name}\" has excluded \"${torrent_category}\" category set"
+case "$mode" in
+  include|exclude) ;;
+  *)
+    log "[x] Invalid QBIT_HARDLINKER_MODE: $mode"
+    exit 1
+    ;;
+esac
+
+category_matches=false
+if [[ -n "$torrent_category" && ",$categories," == *",$torrent_category,"* ]]; then
+  category_matches=true
+fi
+
+if [[ "$mode:$category_matches" == "include:false" || "$mode:$category_matches" == "exclude:true" ]]; then
+  log "[!] Skipped \"${torrent_name}\": category filtered by $mode mode"
   exit 0
 fi
 
