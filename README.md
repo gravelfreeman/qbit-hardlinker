@@ -35,7 +35,8 @@ container:
 | --------------------------- | :-: | :-------: | -------------------------------- |
 | `QBIT_HARDLINKER_SOURCE_DIR` | Required | — | Root directory containing the torrents. |
 | `QBIT_HARDLINKER_DEST_DIR` | Required | — | Root directory where hardlinks are created. |
-| `QBIT_HARDLINKER_EXCLUDED_CATEGORIES` | Optional | Empty | Comma-separated list of categories to skip. |
+| `QBIT_HARDLINKER_MODE` | Optional | `exclude` | Category filtering mode: `include` or `exclude`. |
+| `QBIT_HARDLINKER_CATEGORIES` | Optional | — | Comma-separated list of categories to include or exclude. |
 | `QBIT_HARDLINKER_LOG_FILE` | Optional | `/dev/stdout` | Log file location. |
 
 ## Arrs Exclusion
@@ -43,7 +44,7 @@ container:
 It's recommended to exclude the Arrs categories since those apps are already managing your media and their hardlinks:
 
 ```
-QBIT_HARDLINKER_EXCLUDED_CATEGORIES=radarr,sonarr,lidarr,readarr
+QBIT_HARDLINKER_CATEGORIES=radarr,sonarr,lidarr,readarr
 ```
 
 ## Examples
@@ -58,7 +59,8 @@ services:
     environment:
       QBIT_HARDLINKER_SOURCE_DIR: /media/torrents
       QBIT_HARDLINKER_DEST_DIR: /media/hardlinks
-      QBIT_HARDLINKER_EXCLUDED_CATEGORIES: radarr,sonarr,lidarr,readarr
+      QBIT_HARDLINKER_MODE: exclude
+      QBIT_HARDLINKER_CATEGORIES: radarr,sonarr,lidarr,readarr
     volumes:
       - ./qbit-hardlinker.sh:/config/qbit-hardlinker/qbit-hardlinker.sh:ro
       - /path/to/media:/media
@@ -85,7 +87,9 @@ env:
     value: /media/torrents
   - name: QBIT_HARDLINKER_DEST_DIR
     value: /media/hardlinks
-  - name: QBIT_HARDLINKER_EXCLUDED_CATEGORIES
+  - name: QBIT_HARDLINKER_MODE
+    value: exclude
+  - name: QBIT_HARDLINKER_CATEGORIES
     value: radarr,sonarr,lidarr,readarr
   - name: QBIT_HARDLINKER_LOG_FILE
     value: /dev/stdout
@@ -115,10 +119,11 @@ instead of relying on `export`.
 Edit these lines in `qbit-hardlinker.sh`:
 
 ```bash
-source_dir="/path/to/torrents"                            # line 9
-destination_dir="/path/to/hardlinks"                      # line 10
-excluded_categories="radarr,sonarr,lidarr,readarr"        # line 11
-log_file="/logs/qbit-hardlinker.log"                      # line 12
+source_dir="/path/to/torrents"                                  # line 9
+destination_dir="/path/to/hardlinks"                            # line 10
+mode="exclude"                                                  # line 11
+categories="radarr,sonarr,lidarr,readarr"                       # line 12
+log_file="/path/to/logs"                                        # line 13
 ```
 
 Then make the script executable:
