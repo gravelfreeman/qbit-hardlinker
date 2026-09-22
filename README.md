@@ -18,11 +18,13 @@ The script works independently from the Arrs hardlink functionality, so you can 
 
 1. **qBittorrent** > **Tools** > **Options** > **Downloads** Tab and scroll down to **Run external program** section
 2. Check the box **Run external program on torrent finished**
-3. Add the script path in the text field followed by `"%N" "%D" "%L"` variables.
+3. Add the script path in the text field followed by `"%F" "%D" "%L"` variables.
 
 ```
-/config/qbit-hardlinker/qbit-hardlinker.sh "%N" "%D" "%L"
+/config/qbit-hardlinker/qbit-hardlinker.sh "%F" "%D" "%L"
 ```
+
+`%F` is the actual torrent content path, `%D` is the save directory, and `%L` is the category.
 
 ## Variables
 

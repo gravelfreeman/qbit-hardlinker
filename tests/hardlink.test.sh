@@ -9,7 +9,7 @@ trap 'rm -rf "$test_root"' EXIT
 
 # Build 100 nested directories with 100 files at every level.
 source_dir="$test_root/source"
-source_tree="$source_dir/torrents/library"
+source_tree="$source_dir/torrents/actual-content"
 mkdir -p "$source_tree"
 
 current_directory="$source_tree"
@@ -44,7 +44,7 @@ sample_file() {
 
 # Verify the complete tree, file contents, and representative hardlinks.
 assert_tree() {
-  local destination_tree="$1/torrents/library"
+  local destination_tree="$1/torrents/actual-content"
   local level
   local source_entry
   local destination_entry
@@ -67,7 +67,7 @@ QBIT_HARDLINKER_DEST_DIR="$destination_dir/" \
 QBIT_HARDLINKER_MODE=include \
 QBIT_HARDLINKER_CATEGORIES=library \
 QBIT_HARDLINKER_LOG_FILE="$test_root/test.log" \
-bash "$script_path" library "$source_dir/torrents" library >/dev/null
+bash "$script_path" "$source_tree" "$source_dir/torrents/" library >/dev/null
 
 assert_tree "$destination_dir"
 printf 'hardlink tests passed\n'

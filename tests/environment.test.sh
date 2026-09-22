@@ -48,7 +48,7 @@ run_script() {
     environment+=("QBIT_HARDLINKER_LOG_FILE=$test_root/test.log")
   fi
 
-  if env "${unset_qbit_environment[@]}" "${environment[@]}" bash "$script_path" library "$source_dir/torrents" "$category" >/dev/null; then
+  if env "${unset_qbit_environment[@]}" "${environment[@]}" bash "$script_path" "$source_dir/torrents/library" "$source_dir/torrents" "$category" >/dev/null; then
     actual_status=0
   else
     actual_status=$?
@@ -137,27 +137,27 @@ run_script invalid library library "$invalid_destination" 1
 # Required source and destination variables fail when missing or empty.
 if env "${unset_qbit_environment[@]}" \
   QBIT_HARDLINKER_DEST_DIR="$test_root/missing-source" \
-  bash "$script_path" library "$source_dir/torrents" library >/dev/null 2>&1; then
+  bash "$script_path" "$source_dir/torrents/library" "$source_dir/torrents" library >/dev/null 2>&1; then
   exit 1
 fi
 
 if env "${unset_qbit_environment[@]}" \
   QBIT_HARDLINKER_SOURCE_DIR="$source_dir" \
-  bash "$script_path" library "$source_dir/torrents" library >/dev/null 2>&1; then
+  bash "$script_path" "$source_dir/torrents/library" "$source_dir/torrents" library >/dev/null 2>&1; then
   exit 1
 fi
 
 if env "${unset_qbit_environment[@]}" \
   QBIT_HARDLINKER_SOURCE_DIR= \
   QBIT_HARDLINKER_DEST_DIR="$test_root/empty-source" \
-  bash "$script_path" library "$source_dir/torrents" library >/dev/null 2>&1; then
+  bash "$script_path" "$source_dir/torrents/library" "$source_dir/torrents" library >/dev/null 2>&1; then
   exit 1
 fi
 
 if env "${unset_qbit_environment[@]}" \
   QBIT_HARDLINKER_SOURCE_DIR="$source_dir" \
   QBIT_HARDLINKER_DEST_DIR= \
-  bash "$script_path" library "$source_dir/torrents" library >/dev/null 2>&1; then
+  bash "$script_path" "$source_dir/torrents/library" "$source_dir/torrents" library >/dev/null 2>&1; then
   exit 1
 fi
 
